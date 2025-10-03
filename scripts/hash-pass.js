@@ -4,7 +4,7 @@ dotenv.config();
 
 async function main() {
   const email = "admin@example.com";
-  const plainPassword = "admin";
+  const plainPassword = "09027393534sajjadmirsjd0902m1704";
   const name = "Admin";
 
   const saltRounds = parseInt(process.env.SALT_ROUNDS || "10", 10);

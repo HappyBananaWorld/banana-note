@@ -41,7 +41,8 @@ export async function POST(req) {
       expiresIn: "7d",
     });
     const maxAge = 7 * 24 * 60 * 60;
-    const secure = process.env.NODE_ENV === "production" ? "Secure; " : "";
+    // const secure = process.env.NODE_ENV === "production" ? "Secure; " : "";
+    const secure = ""
     const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax; ${secure}`;
 
     return new Response(
