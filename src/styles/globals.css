@@ -1,0 +1,25 @@
+/* Load fonts */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700&family=Vazirmatn:wght@300;400;700&display=swap");
+
+:root {
+  --font-fa: "Vazirmatn", system-ui, sans-serif;
+  --font-en: "Fredoka", system-ui, sans-serif;
+  --editor-bg: #121212;
+  --editor-text: #e6ebf0;
+  --editor-placeholder: rgba(230, 235, 240, 0.45);
+  --toolbar-bg: rgba(255, 255, 255, 0.05);
+  --toolbar-hover: rgba(255, 255, 255, 0.1);
+  --border-radius: 6px;
+  --block-spacing: 6px;
+  --primary-color: #7b61ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--editor-bg);
+}
