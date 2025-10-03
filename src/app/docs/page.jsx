@@ -1,30 +1,50 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "@/styles/docs/docs.module.css";
 import { FaFolder, FaFileAlt, FaArrowLeft } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const Documents = () => {
+  const router = useRouter();
   const [currentFolder, setCurrentFolder] = useState(null);
+  const [folders, setFolders] = useState([]);
+  const [documents, setDocuments] = useState([]);
 
-  const folders = {
-    "Ideas": ["Startup Plan", "App Concept", "Marketing Strategy"],
-    "English Quotes": ["Motivation Quote 1", "Success Quote 2"],
-    "Tasks": ["Task List - Monday", "Project Roadmap", "Bug Fixes"],
-    "Goals": ["2025 Goals", "Personal Development", "Fitness Plan"]
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/folders");
+        const data = await res.json();
+        if (data.ok) setFolders(data.folders);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
+
+  const openFolder = async (folder) => {
+    setCurrentFolder(folder);
+    try {
+      const res = await fetch(`/api/folders/${folder.id}/documents`);
+      const data = await res.json();
+      if (data.ok) setDocuments(data.documents);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div className={styles.container}>
       {!currentFolder ? (
         <div className={styles.grid}>
-          {Object.keys(folders).map((folder) => (
+          {folders.map((folder) => (
             <div
-              key={folder}
+              key={folder.id}
               className={styles.card}
-              onClick={() => setCurrentFolder(folder)}
+              onClick={() => openFolder(folder)}
             >
               <FaFolder className={styles.iconFolder} />
-              <span>{folder}</span>
+              <span>{folder.name}</span>
             </div>
           ))}
         </div>
@@ -37,10 +57,10 @@ const Documents = () => {
             <FaArrowLeft className={styles.iconBack} />
             <span>Back</span>
           </div>
-          {folders[currentFolder].map((doc, index) => (
-            <div key={index} className={styles.card}>
+          {documents.map((doc) => (
+            <div key={doc.id} className={styles.card} onClick={() => router.push(`/docs/${doc.id}`)}>
               <FaFileAlt className={styles.iconDoc} />
-              <span>{doc}</span>
+              <span>{doc.title}</span>
             </div>
           ))}
         </div>

@@ -25,7 +25,7 @@ const debounce = (fn, wait = 120) => {
   };
 };
 
-const Editor = () => {
+const Editor = ({ initialData, onReady }) => {
   const instanceRef = useRef(null);
 
   useEffect(() => {
@@ -72,6 +72,7 @@ const Editor = () => {
           holder: "editorjs",
           placeholder: "اینجا تایپ کن...",
           autofocus: true,
+          data: initialData || undefined,
           tools: {
             header: Header,
             list: List,
@@ -123,6 +124,10 @@ const Editor = () => {
             });
 
             instanceRef.current._directionObserver = observer;
+
+            if (typeof onReady === "function") {
+              onReady(instanceRef.current);
+            }
           },
         });
       }

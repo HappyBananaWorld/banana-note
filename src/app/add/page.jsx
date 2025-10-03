@@ -1,21 +1,66 @@
-"use client"
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import styles from "@/styles/add/add.module.css";
 
 const Add = () => {
-  const [type, setType] = useState(null); // "folder" or "document"
+  const [type, setType] = useState(null);
   const [folderName, setFolderName] = useState("");
   const [docTitle, setDocTitle] = useState("");
   const [selectedFolder, setSelectedFolder] = useState("");
+  const [folders, setFolders] = useState([]);
 
-  const folders = ["Ideas", "English Quotes", "Tasks", "Goals"];
+  useEffect(() => {
+    fetchFolders();
+  }, []);
 
-  const handleSubmit = (e) => {
+  const fetchFolders = async () => {
+    try {
+      const res = await fetch("/api/folders");
+      const data = await res.json();
+      if (data.ok) setFolders(data.folders);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (type === "folder") {
-      alert(`New Folder: ${folderName}`);
-    } else if (type === "document") {
-      alert(`New Document: ${docTitle} in ${selectedFolder}`);
+
+    try {
+      if (type === "folder") {
+        const res = await fetch("/api/add/folder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: folderName }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          alert(`Folder "${data.folder.name}" created!`);
+          setFolderName("");
+          fetchFolders();
+        }
+      } else if (type === "document") {
+        const folderId = folders.find((f) => f.name === selectedFolder)?.id;
+        if (!folderId) return alert("Select a valid folder");
+
+        const res = await fetch("/api/add/document", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: docTitle, folderId }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          alert(
+            `Document "${data.document.title}" created in "${selectedFolder}"`
+          );
+          setDocTitle("");
+          setSelectedFolder("");
+        }
+      }
+      setType(null);
+    } catch (err) {
+      console.error(err);
+      // alert("Something went wrong!");
     }
   };
 
@@ -63,9 +108,9 @@ const Add = () => {
                 required
               >
                 <option value="">-- Choose Folder --</option>
-                {folders.map((f, i) => (
-                  <option key={i} value={f}>
-                    {f}
+                {folders.map((f) => (
+                  <option key={f.id} value={f.name}>
+                    {f.name}
                   </option>
                 ))}
               </select>
