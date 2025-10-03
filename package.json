@@ -9,10 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "15.5.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-
+    "@blocknote/core": "^0.40.0",
+    "@blocknote/mantine": "^0.40.0",
+    "@blocknote/react": "^0.40.0",
     "@editorjs/code": "^2.9.3",
     "@editorjs/delimiter": "^1.4.2",
     "@editorjs/editorjs": "^2.31.0",
@@ -27,21 +26,21 @@
     "@editorjs/simple-image": "^1.6.0",
     "@editorjs/table": "^2.4.5",
     "@editorjs/underline": "^1.2.1",
-
-    "@blocknote/core": "^0.40.0",
-    "@blocknote/mantine": "^0.40.0",
-    "@blocknote/react": "^0.40.0",
-
     "@mantine/core": "^5.10.5",
     "@mantine/hooks": "^5.10.5",
-
-    "lodash.throttle": "^4.1.1"
+    "@prisma/client": "^6.16.3",
+    "bcryptjs": "^3.0.2",
+    "lodash.throttle": "^4.1.1",
+    "next": "15.5.4",
+    "prisma": "^6.16.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "eslint": "^9",
     "@eslint/eslintrc": "^3",
+    "@types/lodash.throttle": "^4.1.9",
+    "eslint": "^9",
     "eslint-config-next": "15.5.4",
-    "sass": "^1.93.2",
-    "@types/lodash.throttle": "^4.1.9"
+    "sass": "^1.93.2"
   }
 }
