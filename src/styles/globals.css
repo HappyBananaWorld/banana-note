@@ -27,3 +27,26 @@
 body {
   background: var(--editor-bg);
 }
+
+label {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+input,
+select {
+  padding: 10px;
+  border: none;
+  border-radius: var(--radius);
+  background: #2a2a40;
+  color: var(--text-color);
+  font-size: 14px;
+  outline: none;
+}
+
+span {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 6px;
+}

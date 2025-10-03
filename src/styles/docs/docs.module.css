@@ -1,0 +1,62 @@
+:root {
+  --bg-color: #121212;
+  --card-bg: #1e1e2f;
+  --card-hover: #2a2a40;
+  --text-color: #e6ebf0;
+  --accent: #7b61ff;
+  --radius: 14px;
+  --font-en: "Fredoka", system-ui, sans-serif;
+}
+
+.container {
+  background: var(--bg-color);
+  min-height: 100vh;
+  padding: 20px;
+  font-family: var(--font-en);
+  color: var(--text-color);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.card:hover {
+  background: var(--card-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(123, 97, 255, 0.5);
+}
+
+.iconFolder {
+  font-size: 36px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.iconDoc {
+  font-size: 32px;
+  color: #4aa3ff;
+  margin-bottom: 8px;
+}
+
+.iconBack {
+  font-size: 28px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.backBtn {
+  background: #26263d;
+}
+
