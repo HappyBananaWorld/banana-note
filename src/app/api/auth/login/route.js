@@ -58,7 +58,7 @@ export async function POST(req) {
       }
     );
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Server error" }), {
+    return new Response(JSON.stringify({ error: "Server error",err }), {
       status: 500,
     });
   } finally {
