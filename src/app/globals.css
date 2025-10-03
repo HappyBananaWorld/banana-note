@@ -1,42 +1,144 @@
+/* Load fonts */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700&family=Vazirmatn:wght@300;400;700&display=swap");
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --font-fa: "Vazirmatn", system-ui, sans-serif;
+  --font-en: "Fredoka", system-ui, sans-serif;
+  --editor-bg: #121212; /* پس‌زمینه تیره */
+  --editor-text: #e6ebf0; /* رنگ متن */
+  --editor-placeholder: rgba(230, 235, 240, 0.45);
+  --toolbar-bg: rgba(255, 255, 255, 0.05);
+  --toolbar-hover: rgba(255, 255, 255, 0.1);
+  --border-radius: 6px;
+  --block-spacing: 6px;
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* کل ادیتور */
+.codex-editor {
+  width: 100%;
+  min-height: 300px;
+  background: var(--editor-bg);
+  padding: 2.3rem;
+  box-sizing: border-box;
+  border-radius: var(--border-radius);
+  font-family: var(--font-fa), var(--font-en), sans-serif;
+  color: var(--editor-text);
+  line-height: 1.6;
+  overflow-wrap: break-word;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* مخفی کردن دکمه‌های اضافی */
+.ce-toolbar__plus {
+  width: 30px;
+  height: 30px;
+}
+
+.ce-toolbar__actions {
+  padding-left: 10px;
+}
+
+/* بلاک‌ها */
+.ce-block,
+.ce-paragraph,
+.ce-header {
+  margin: 0;
+  padding: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-fa), var(--font-en), sans-serif;
+  color: var(--editor-text);
+  transition: background 0.2s;
+  border-radius: var(--border-radius);
+}
+
+/* hover بلاک‌ها */
+.ce-block:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* محتوای داخلی بلاک */
+.ce-block__content,
+.ce-block__content > * {
+  margin: 0;
+  padding: 0;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.ce-block__content {
+  width: 100% !important;
+  max-width: unset !important;
+}
+
+/* contenteditable */
+[contenteditable="true"] {
+  outline: none;
+  padding: 2px 0;
+  min-height: 22px;
+  width: 100%;
+}
+
+/* placeholder */
+.ce-paragraph.ce-paragraph__placeholder {
+  color: var(--editor-placeholder);
+}
+
+/* فاصله بین بلاک‌ها */
+.ce-block + .ce-block {
+  margin-top: var(--block-spacing);
+}
+
+/* راست‌چین و چپ‌چین */
+.ce-block.rtl,
+.ce-paragraph.rtl,
+.ce-header.rtl {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--font-fa);
+}
+
+.ce-block.ltr,
+.ce-paragraph.ltr,
+.ce-header.ltr {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--font-en);
+}
+
+/* کلاس hug: بچسبد به لبه‌ها */
+.ce-block.hug,
+.ce-paragraph.hug,
+.ce-header.hug {
+  margin: 0;
+  padding: 0;
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+  .codex-editor {
+    padding: 8px;
   }
+
+  .ce-toolbar__settings-btn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ce-toolbar__settings-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* اصلاح رنگ selection */
+.codex-editor ::selection,
+.codex-editor ::-moz-selection {
+  background-color: #4a90e2; /* رنگ پس‌زمینه انتخاب (مثلاً آبی روشن) */
+  color: #ffffff; /* رنگ متن هنگام انتخاب */
 }

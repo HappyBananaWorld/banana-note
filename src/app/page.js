@@ -1,95 +1,143 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+import { useEffect, useRef } from "react";
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+let EditorJS;
+
+/** تشخیص جهت متن: rtl یا ltr */
+const detectScriptMode = (text) => {
+  if (!text) return null;
+  const faMatches =
+    text.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g) || [];
+  const enMatches = text.match(/[A-Za-z]/g) || [];
+  const faCount = faMatches.length;
+  const enCount = enMatches.length;
+  if (faCount === 0 && enCount === 0) return null;
+  return faCount >= enCount ? "rtl" : "ltr";
+};
+
+/** debounce برای جلوگیری از اجرای زیاد تابع */
+const debounce = (fn, wait = 120) => {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+};
+
+const Editor = () => {
+  const instanceRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    /** اعمال RTL/LTR روی یک بلاک */
+    const applyDirectionToBlock = (el) => {
+      if (!el) return;
+      const txt = el.innerText || el.textContent || "";
+      const mode = detectScriptMode(txt);
+      el.classList.toggle("rtl", mode === "rtl");
+      el.classList.toggle("ltr", mode === "ltr");
+    };
+
+    /** اعمال RTL/LTR روی همه بلاک‌ها */
+    const applyDirectionToAllBlocks = () => {
+      const holder = document.getElementById("editorjs");
+      if (!holder) return;
+      const blocks = holder.querySelectorAll(".ce-block, .ce-paragraph, .ce-header");
+      blocks.forEach(applyDirectionToBlock);
+    };
+
+    /** راه‌اندازی Editor.js */
+    const loadEditor = async () => {
+      const EditorModule = await import("@editorjs/editorjs");
+      const Header = (await import("@editorjs/header")).default;
+      const List = (await import("@editorjs/list")).default;
+      const Quote = (await import("@editorjs/quote")).default;
+      const Marker = (await import("@editorjs/marker")).default;
+      const Embed = (await import("@editorjs/embed")).default;
+      const Code = (await import("@editorjs/code")).default;
+      const Table = (await import("@editorjs/table")).default;
+      const Delimiter = (await import("@editorjs/delimiter")).default;
+      const Underline = (await import("@editorjs/underline")).default;
+      const InlineCode = (await import("@editorjs/inline-code")).default;
+      const SimpleImage = (await import("@editorjs/simple-image")).default;
+
+      EditorJS = EditorModule.default;
+
+      if (!instanceRef.current && mounted) {
+        instanceRef.current = new EditorJS({
+          holder: "editorjs",
+          placeholder: "اینجا تایپ کن...",
+          autofocus: true,
+          tools: {
+            header: Header,
+            list: List,
+            quote: Quote,
+            marker: { class: Marker, shortcut: "CMD+SHIFT+M" },
+            embed: Embed,
+            code: Code,
+            table: Table,
+            delimiter: Delimiter,
+            underline: Underline,
+            inlineCode: InlineCode,
+            image: SimpleImage,
+          },
+          onReady: () => {
+            applyDirectionToAllBlocks();
+
+            const holder = document.getElementById("editorjs");
+            if (!holder) return;
+
+            const observer = new MutationObserver((mutations) => {
+              mutations.forEach((m) => {
+                // بلاک جدید اضافه شده
+                m.addedNodes.forEach((node) => {
+                  if (node.nodeType === 1 && node.classList.contains("ce-block")) {
+                    applyDirectionToBlock(node);
+                  }
+                });
+
+                // تغییر متن موجود
+                if (m.type === "characterData") {
+                  // اگر target یک Text Node است، از parentElement استفاده کن
+                  const targetEl = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+                  const block = targetEl?.closest(".ce-block, .ce-paragraph, .ce-header");
+                  if (block) applyDirectionToBlock(block);
+                }
+              });
+            });
+
+            observer.observe(holder, {
+              subtree: true,
+              childList: true,
+              characterData: true,
+            });
+
+            instanceRef.current._directionObserver = observer;
+          },
+        });
+      }
+    };
+
+    loadEditor();
+
+    return () => {
+      mounted = false;
+
+      if (instanceRef.current?._directionObserver) {
+        instanceRef.current._directionObserver.disconnect();
+        instanceRef.current._directionObserver = null;
+      }
+
+      if (instanceRef.current?.destroy) {
+        instanceRef.current.destroy();
+        instanceRef.current = null;
+      }
+    };
+  }, []);
+
+  return <div id="editorjs" className="editor" />;
+};
+
+export default Editor;
