@@ -1,7 +1,7 @@
 import styles from "@/styles/login/login.module.css";
 
 const Login = () => {
-  return (
+return (
     <div className={styles.container}>
       <div className={styles["login-box"]}>
         <h1>Login</h1>

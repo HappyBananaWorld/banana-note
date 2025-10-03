@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
+import BottomMenu from "@/components/bottom-menu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
+        <BottomMenu />
       </body>
     </html>
   );
