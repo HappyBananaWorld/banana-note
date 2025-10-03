@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Editor from "@/components/editor";
 import styles from "@/styles/docs/docs.module.css";
+import useMessage from "@/hook/useMessage";
 
 const DocEditorPage = ({ params }) => {
     const { id } = params;
@@ -10,6 +11,7 @@ const DocEditorPage = ({ params }) => {
     const [title, setTitle] = useState("");
     const [initialData, setInitialData] = useState(undefined);
     const [saving, setSaving] = useState(false);
+    const { successMessage, errorMessage, contextHolder } = useMessage();
 
     useEffect(() => {
         let cancelled = false;
@@ -51,10 +53,13 @@ const DocEditorPage = ({ params }) => {
             });
             const data = await res.json();
             if (data.ok) {
-                // optionally toast
+                successMessage("Saved");
+            } else {
+                errorMessage(data.error || "Save failed");
             }
         } catch (err) {
             console.error(err);
+            errorMessage("Save failed");
         } finally {
             setSaving(false);
         }
@@ -64,6 +69,7 @@ const DocEditorPage = ({ params }) => {
 
     return (
         <div className={styles.container}>
+            {contextHolder}
             <div className={styles.actions}>
                 <input
                     type="text"

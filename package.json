@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
     "@blocknote/core": "^0.40.0",
     "@blocknote/mantine": "^0.40.0",
     "@blocknote/react": "^0.40.0",
@@ -29,6 +30,7 @@
     "@mantine/core": "^5.10.5",
     "@mantine/hooks": "^5.10.5",
     "@prisma/client": "^6.16.3",
+    "antd": "^5.27.4",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "lodash.throttle": "^4.1.1",

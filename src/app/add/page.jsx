@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "@/styles/add/add.module.css";
+import useMessage from "@/hook/useMessage";
 
 const Add = () => {
   const [type, setType] = useState(null);
@@ -8,6 +9,7 @@ const Add = () => {
   const [docTitle, setDocTitle] = useState("");
   const [selectedFolder, setSelectedFolder] = useState("");
   const [folders, setFolders] = useState([]);
+  const { successMessage, errorMessage, warningMessage, contextHolder } = useMessage();
 
   useEffect(() => {
     fetchFolders();
@@ -35,13 +37,13 @@ const Add = () => {
         });
         const data = await res.json();
         if (data.ok) {
-          alert(`Folder "${data.folder.name}" created!`);
+          successMessage(`Folder "${data.folder.name}" created!`);
           setFolderName("");
           fetchFolders();
         }
       } else if (type === "document") {
         const folderId = folders.find((f) => f.name === selectedFolder)?.id;
-        if (!folderId) return alert("Select a valid folder");
+        if (!folderId) return warningMessage("Select a valid folder");
 
         const res = await fetch("/api/add/document", {
           method: "POST",
@@ -50,9 +52,7 @@ const Add = () => {
         });
         const data = await res.json();
         if (data.ok) {
-          alert(
-            `Document "${data.document.title}" created in "${selectedFolder}"`
-          );
+          successMessage(`Document "${data.document.title}" created in "${selectedFolder}"`);
           setDocTitle("");
           setSelectedFolder("");
         }
@@ -60,12 +60,13 @@ const Add = () => {
       setType(null);
     } catch (err) {
       console.error(err);
-      // alert("Something went wrong!");
+      errorMessage("Something went wrong!");
     }
   };
 
   return (
     <div className={styles.container}>
+      {contextHolder}
       {!type && (
         <div className={styles.cardWrapper}>
           <div className={styles.card} onClick={() => setType("folder")}>
